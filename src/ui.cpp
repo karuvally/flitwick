@@ -6,6 +6,7 @@
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Slider.H>
+#include <FL/Fl_Value_Slider.H>
 
 Fl_Menu_Bar* makeMenuBar() {
 // Creates menu bar
@@ -71,6 +72,16 @@ Fl_Slider* makeSlider(int x, int y, int w, int h) {
     return slider;
 }
 
+Fl_Slider* makeValueSlider(int x, int y, int w, int h) {
+    Fl_Value_Slider *slider = new Fl_Value_Slider(x, y, w, h);
+    slider->type(FL_HOR_NICE_SLIDER);
+    slider->minimum(0);
+    slider->maximum(100);
+    slider->value(80);
+
+    return slider;
+}
+
 int player(int argc, char** argv) {
     auto playerWindow = std::make_unique<Fl_Window>(500, 300, "Flitwick");
 
@@ -83,6 +94,7 @@ int player(int argc, char** argv) {
     Fl_Button* forwardButton = makeButton(125, 35, "@>>");
 
     Fl_Slider* seekSlider = makeSlider(155, 40, 210, 15);
+    Fl_Slider* volumeSlider = makeValueSlider(385, 40, 110, 15);
 
     playerWindow->end();
     playerWindow->show(argc, argv);
