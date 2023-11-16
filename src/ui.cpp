@@ -64,7 +64,8 @@ Fl_Button* makeButton(int x, int y, const char* label) {
     return button;
 }
 
-Fl_Slider* makeSlider(int x, int y, int w, int h) {
+Fl_Slider* makeSeekSlider(int x, int y, int w, int h) {
+// Creates seek slider
     Fl_Slider *slider = new Fl_Slider(x, y, w, h);
     slider->type(FL_HOR_NICE_SLIDER);
     slider->value(0);
@@ -72,7 +73,8 @@ Fl_Slider* makeSlider(int x, int y, int w, int h) {
     return slider;
 }
 
-Fl_Slider* makeValueSlider(int x, int y, int w, int h) {
+Fl_Slider* makeVolumeSlider(int x, int y, int w, int h) {
+// Creates Volume slider
     Fl_Value_Slider *slider = new Fl_Value_Slider(x, y, w, h);
     slider->type(FL_HOR_NICE_SLIDER);
     slider->minimum(0);
@@ -93,8 +95,8 @@ int player(int argc, char** argv) {
     Fl_Button* backwardButton = makeButton(95, 35, "@<<");
     Fl_Button* forwardButton = makeButton(125, 35, "@>>");
 
-    Fl_Slider* seekSlider = makeSlider(155, 40, 210, 15);
-    Fl_Slider* volumeSlider = makeValueSlider(385, 40, 110, 15);
+    Fl_Slider* seekSlider = makeSeekSlider(155, 40, 210, 15);
+    Fl_Slider* volumeSlider = makeVolumeSlider(385, 40, 110, 15);
 
     playerWindow->end();
     playerWindow->show(argc, argv);
