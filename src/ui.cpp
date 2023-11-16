@@ -4,7 +4,7 @@
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Menu_Bar.H>
-
+#include <FL/Fl_Button.H>
 
 Fl_Menu_Bar* makeMenuBar() {
 // Creates menu bar
@@ -54,9 +54,25 @@ Fl_Menu_Bar* makeMenuBar() {
     return playerMenu;
 }
 
+Fl_Button* makeButton(int x, int y, const char* label) {
+// Creates new buttons
+    Fl_Button *button = new Fl_Button(x, y, 25, 25, label);
+    button->type(FL_NORMAL_BUTTON);
+
+    return button;
+}
+
 int player(int argc, char** argv) {
     auto playerWindow = std::make_unique<Fl_Window>(500, 300, "Flitwick");
+
     Fl_Menu_Bar* playerMenu = makeMenuBar();
+    
+    Fl_Button* stopButton = makeButton(5, 35, "@square");
+    Fl_Button* playButton = makeButton(35, 35, "@>");
+    Fl_Button* pauseButton = makeButton(65, 35, "@||");
+    Fl_Button* backwardButton = makeButton(95, 35, "@<<");
+    Fl_Button* forwardButton = makeButton(125, 35, "@>>");
+    
 
     playerWindow->end();
     playerWindow->show(argc, argv);
