@@ -56,7 +56,7 @@ Fl_Menu_Bar* makeMenuBar() {
     return playerMenu;
 }
 
-Fl_Button* makeButton(int x, int y, const char* label) {
+Fl_Button* makeButton(const int x, const int y, const char* label) {
 // Creates new buttons
     Fl_Button *button = new Fl_Button(x, y, 25, 25, label);
     button->type(FL_NORMAL_BUTTON);
@@ -64,7 +64,7 @@ Fl_Button* makeButton(int x, int y, const char* label) {
     return button;
 }
 
-Fl_Slider* makeSeekSlider(int x, int y, int w, int h) {
+Fl_Slider* makeSeekSlider(const int x, const int y, const int w, const int h) {
 // Creates seek slider
     Fl_Slider *slider = new Fl_Slider(x, y, w, h);
     slider->type(FL_HOR_NICE_SLIDER);
@@ -73,7 +73,7 @@ Fl_Slider* makeSeekSlider(int x, int y, int w, int h) {
     return slider;
 }
 
-Fl_Slider* makeVolumeSlider(int x, int y, int w, int h) {
+Fl_Slider* makeVolumeSlider(const int x, const int y, const int w, const int h) {
 // Creates Volume slider
     Fl_Value_Slider *slider = new Fl_Value_Slider(x, y, w, h);
     slider->type(FL_HOR_NICE_SLIDER);
