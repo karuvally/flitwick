@@ -13,6 +13,7 @@ class MusicPlayer {
         int musicOpen = 0;
         int musicVolume = MIX_MAX_VOLUME;
         int looping = 0;
+        double currentTrackLength = -1;
         SDL_AudioSpec spec;
 
     public:
@@ -60,6 +61,8 @@ class MusicPlayer {
                 SDL_Log("Couldn't load music file: %s\n", SDL_GetError());
             }
 
+            currentTrackLength = Mix_MusicDuration(music);
+
             // 2nd argument -1 puts the current track on a loop
             if (Mix_PlayMusic(music, -1) == -1) {
                 SDL_Log("Failed to play music: %s\n", SDL_GetError());
@@ -95,7 +98,8 @@ class MusicPlayer {
 
         void resumeMusic() {
             std::cout << "Music resumed\n";
-            if (!(Mix_PausedMusic() || Mix_PlayingMusic()))
+            // if (!(Mix_PausedMusic() || Mix_PlayingMusic()))
+            if (music == NULL)
                 loadMusic(currentTrack.data());
             else if (Mix_PausedMusic())
                 Mix_ResumeMusic();
@@ -108,7 +112,7 @@ class MusicPlayer {
         }
 
         inline bool isMusicPlaying() {
-            return Mix_PlayingMusic() || Mix_PausedMusic();
+            return Mix_PlayingMusic() && !Mix_PausedMusic();
         }
 
         inline int getVolume() {
@@ -117,6 +121,14 @@ class MusicPlayer {
 
         inline void seekMusicTo(int pos) {
             Mix_SetMusicPosition(pos);
+        }
+
+        inline double getMusicPosition() {
+            return Mix_GetMusicPosition(music);
+        }
+
+        inline double getMusicLength() {
+            return currentTrackLength;
         }
 };
 

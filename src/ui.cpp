@@ -12,6 +12,15 @@
 
 MusicPlayer musicPlayer = MusicPlayer();
 
+Fl_Button* stopButton; 
+Fl_Button* playButton; 
+Fl_Button* pauseButton;
+Fl_Button* backwardButton;
+Fl_Button* forwardButton;
+
+Fl_Slider* seekSlider; 
+Fl_Slider* volumeSlider;
+
 Fl_Menu_Bar* makeMenuBar() {
 // Creates menu bar
 
@@ -69,11 +78,16 @@ Fl_Button* makeButton(const int x, const int y, const char* label, void (*func)(
     return button;
 }
 
+void seekToPositionCb(Fl_Widget*, void*);
+
 Fl_Slider* makeSeekSlider(const int x, const int y, const int w, const int h) {
 // Creates seek slider
     Fl_Slider *slider = new Fl_Slider(x, y, w, h);
     slider->type(FL_HOR_NICE_SLIDER);
+    slider->minimum(0);
+    slider->maximum(100);
     slider->value(0);
+    slider->callback(seekToPositionCb, slider);
 
     return slider;
 }
@@ -101,19 +115,40 @@ Fl_Slider* makeVolumeSlider(const int x, const int y, const int w, const int h) 
 
 void stopMusicCb() {
     musicPlayer.stopMusic();
+    seekSlider->value(0);
 }
 
 void pauseMusicCb() {
-    musicPlayer.pauseMusic();
+    if (musicPlayer.isMusicPlaying())
+        musicPlayer.pauseMusic();
 }
 
+void seekSliderWithTimeCb(void*);
+
 void resumeMusicCb() {
-    musicPlayer.resumeMusic();
+    if (!musicPlayer.isMusicPlaying()) {
+        musicPlayer.resumeMusic();
+        Fl::add_timeout(1.0, seekSliderWithTimeCb);
+    }
 }
 
 void volumeMusicCb(Fl_Widget*, void* v) {
     Fl_Value_Slider* slider = (Fl_Value_Slider*)v;
     musicPlayer.setVolume(slider->value());
+}
+
+void seekToPositionCb(Fl_Widget*, void* v) {
+    Fl_Slider* slider = (Fl_Slider*)v;
+    double length = musicPlayer.getMusicLength();
+    double pos = (slider->value()/slider->maximum())*length;
+    musicPlayer.seekMusicTo(pos);
+}
+
+void seekSliderWithTimeCb(void* v) {
+    double pos = (musicPlayer.getMusicPosition()/musicPlayer.getMusicLength())*100;
+    seekSlider->value(pos);
+    if (musicPlayer.isMusicPlaying())
+        Fl::repeat_timeout(0.5, seekSliderWithTimeCb);
 }
 
 void dummy() {
@@ -125,16 +160,17 @@ int player(int argc, char** argv) {
 
     Fl_Menu_Bar* playerMenu = makeMenuBar();
     
-    Fl_Button* stopButton = makeButton(5, 35, "@square", &stopMusicCb);
-    Fl_Button* playButton = makeButton(35, 35, "@>", &resumeMusicCb);
-    Fl_Button* pauseButton = makeButton(65, 35, "@||", &pauseMusicCb);
-    Fl_Button* backwardButton = makeButton(95, 35, "@<<", &dummy);
-    Fl_Button* forwardButton = makeButton(125, 35, "@>>", &dummy);
+    stopButton = makeButton(5, 35, "@square", &stopMusicCb);
+    playButton = makeButton(35, 35, "@>", &resumeMusicCb);
+    pauseButton = makeButton(65, 35, "@||", &pauseMusicCb);
+    backwardButton = makeButton(95, 35, "@<<", &dummy);
+    forwardButton = makeButton(125, 35, "@>>", &dummy);
 
-    Fl_Slider* seekSlider = makeSeekSlider(155, 40, 210, 15);
-    Fl_Slider* volumeSlider = makeVolumeSlider(385, 40, 110, 15);
+    seekSlider = makeSeekSlider(155, 40, 210, 15);
+    volumeSlider = makeVolumeSlider(385, 40, 110, 15);
 
     musicPlayer.loadMusic("/home/pranav/Music/muzik.mp3");
+    Fl::add_timeout(0.5, seekSliderWithTimeCb);
 
     playerWindow->end();
     playerWindow->show(argc, argv);
