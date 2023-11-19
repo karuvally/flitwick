@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
@@ -33,7 +34,22 @@ int main() {
     }
 
     //102 seconds is the length of the currently loaded music
-     SDL_Delay(102000);
+     //SDL_Delay(102000);
+
+    char ch;
+    bool playing = true;
+    while ((ch = getchar()) != 'q') {
+        switch(ch) {
+            case 'p':
+            case 'P':
+                if (playing)
+                    Mix_PauseMusic();
+                else
+                    Mix_ResumeMusic();
+                playing = !playing;
+                break;
+        } 
+    }
 
     Mix_FreeMusic(music);
     Mix_CloseAudio();
