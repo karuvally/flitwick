@@ -8,6 +8,7 @@
 
 class MusicPlayer {
     private:
+        std::string currentTrack;
         Mix_Music* music;
         int musicOpen = 0;
         int musicVolume = MIX_MAX_VOLUME;
@@ -45,6 +46,8 @@ class MusicPlayer {
 
         void loadMusic(const char* filename) {
             std::cout << "Loading music " << filename << '\n';
+            currentTrack = filename;
+
             if (musicOpen) {
                 musicOpen = 0;
                 Mix_FreeMusic(music);
@@ -62,6 +65,17 @@ class MusicPlayer {
                 SDL_Log("Failed to play music: %s\n", SDL_GetError());
             }
         }
+
+        void freeMusicMemory() {
+            if (music) {
+                Mix_FreeMusic(music);
+                music = NULL;
+            }
+            Mix_CloseAudio();
+            SDL_Quit();
+
+            std::cout << "Cleared all the clunky memory\n";
+        }
         
         void stopMusic() {
             std::cout << "Stopping Music\n";
@@ -69,8 +83,8 @@ class MusicPlayer {
             Mix_FreeMusic(music);
             music = NULL;
 
-            Mix_CloseAudio();
-            SDL_Quit();
+            //Mix_CloseAudio();
+            //SDL_Quit();
         }
 
         void pauseMusic() {
@@ -81,7 +95,9 @@ class MusicPlayer {
 
         void resumeMusic() {
             std::cout << "Music resumed\n";
-            if (Mix_PausedMusic())
+            if (!(Mix_PausedMusic() || Mix_PlayingMusic()))
+                loadMusic(currentTrack.data());
+            else if (Mix_PausedMusic())
                 Mix_ResumeMusic();
         }
 
@@ -104,37 +120,37 @@ class MusicPlayer {
         }
 };
 
-int main() {
-    MusicPlayer player = MusicPlayer();
-    player.loadMusic("/home/pranav/Music/muzik.mp3");
+// int main() {
+//     MusicPlayer player = MusicPlayer();
+//     player.loadMusic("/home/pranav/Music/muzik.mp3");
     
-    char ch;
-    int val;
+//     char ch;
+//     int val;
 
-    while ((ch = getchar()) != '9') {
-        switch(ch) {
-            case 'p': case 'P':
-                player.pauseMusic();
-                break;
-            case 'r': case 'R':
-                player.resumeMusic();
-                break;
-            case 's': case 'S':
-                player.stopMusic();
-                break;
-            case '+':
-                val = player.getVolume();
-                player.setVolume(val + 10);
-                break;
-            case '-':
-                val = player.getVolume();
-                player.setVolume(val - 10);
-                break;
-            case '7':
-                player.seekMusicTo(230);
-                break;
-        }
-    }
+//     while ((ch = getchar()) != '9') {
+//         switch(ch) {
+//             case 'p': case 'P':
+//                 player.pauseMusic();
+//                 break;
+//             case 'r': case 'R':
+//                 player.resumeMusic();
+//                 break;
+//             case 's': case 'S':
+//                 player.stopMusic();
+//                 break;
+//             case '+':
+//                 val = player.getVolume();
+//                 player.setVolume(val + 10);
+//                 break;
+//             case '-':
+//                 val = player.getVolume();
+//                 player.setVolume(val - 10);
+//                 break;
+//             case '7':
+//                 player.seekMusicTo(230);
+//                 break;
+//         }
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
