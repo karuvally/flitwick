@@ -78,6 +78,8 @@ Fl_Slider* makeSeekSlider(const int x, const int y, const int w, const int h) {
     return slider;
 }
 
+void volumeMusicCb(Fl_Widget*, void*);
+
 Fl_Slider* makeVolumeSlider(const int x, const int y, const int w, const int h) {
 // Creates Volume slider
     Fl_Value_Slider *slider = new Fl_Value_Slider(x, y, w, h);
@@ -85,6 +87,7 @@ Fl_Slider* makeVolumeSlider(const int x, const int y, const int w, const int h) 
     slider->minimum(0);
     slider->maximum(100);
     slider->value(80);
+    slider->callback(volumeMusicCb, slider);
 
     return slider;
 }
@@ -96,16 +99,21 @@ Fl_Slider* makeVolumeSlider(const int x, const int y, const int w, const int h) 
     unqualified or parenthesized non-static member
     function to form a pointer to member function."  */
 
-void stopMusic() {
+void stopMusicCb() {
     musicPlayer.stopMusic();
 }
 
-void pauseMusic() {
+void pauseMusicCb() {
     musicPlayer.pauseMusic();
 }
 
-void resumeMusic() {
+void resumeMusicCb() {
     musicPlayer.resumeMusic();
+}
+
+void volumeMusicCb(Fl_Widget*, void* v) {
+    Fl_Value_Slider* slider = (Fl_Value_Slider*)v;
+    musicPlayer.setVolume(slider->value());
 }
 
 void dummy() {
@@ -117,9 +125,9 @@ int player(int argc, char** argv) {
 
     Fl_Menu_Bar* playerMenu = makeMenuBar();
     
-    Fl_Button* stopButton = makeButton(5, 35, "@square", &stopMusic);
-    Fl_Button* playButton = makeButton(35, 35, "@>", &resumeMusic);
-    Fl_Button* pauseButton = makeButton(65, 35, "@||", &pauseMusic);
+    Fl_Button* stopButton = makeButton(5, 35, "@square", &stopMusicCb);
+    Fl_Button* playButton = makeButton(35, 35, "@>", &resumeMusicCb);
+    Fl_Button* pauseButton = makeButton(65, 35, "@||", &pauseMusicCb);
     Fl_Button* backwardButton = makeButton(95, 35, "@<<", &dummy);
     Fl_Button* forwardButton = makeButton(125, 35, "@>>", &dummy);
 
