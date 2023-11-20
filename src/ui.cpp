@@ -46,7 +46,7 @@ Fl_Menu_Bar* makeMenuBar() {
 
     Fl_Menu_Item menuitems[] = {
         {"&File", 0, 0, 0, FL_SUBMENU}, // File
-            {"&Open File", 0, (Fl_Callback*)chooseFileCb},
+            {"&Open File", FL_COMMAND + 'o', (Fl_Callback*)chooseFileCb},
             {"&Add File", 0},
             {"&Add Folder", 0},
             {"&New Playlist", 0},
@@ -89,11 +89,12 @@ Fl_Menu_Bar* makeMenuBar() {
     return playerMenu;
 }
 
-Fl_Button* makeButton(const int x, const int y, const char* label, void (*func)()) {
+Fl_Button* makeButton(const int x, const int y, const char* label, void (*func)(), const char shortcut) {
 // Creates new buttons
     Fl_Button *button = new Fl_Button(x, y, 25, 25, label);
     button->type(FL_NORMAL_BUTTON);
     button->callback((Fl_Callback*)func);
+    button->shortcut(shortcut);
 
     return button;
 }
@@ -185,11 +186,11 @@ int player(int argc, char** argv) {
 
     Fl_Menu_Bar* playerMenu = makeMenuBar();
     
-    flitWidgets.stopButton = makeButton(5, 35, "@square", &stopMusicCb);
-    flitWidgets.playButton = makeButton(35, 35, "@>", &resumeMusicCb);
-    flitWidgets.pauseButton = makeButton(65, 35, "@||", &pauseMusicCb);
-    flitWidgets.backwardButton = makeButton(95, 35, "@<<", &dummy);
-    flitWidgets.forwardButton = makeButton(125, 35, "@>>", &dummy);
+    flitWidgets.stopButton = makeButton(5, 35, "@square", &stopMusicCb, 's');
+    flitWidgets.playButton = makeButton(35, 35, "@>", &resumeMusicCb, 'p');
+    flitWidgets.pauseButton = makeButton(65, 35, "@||", &pauseMusicCb, 'h');
+    flitWidgets.backwardButton = makeButton(95, 35, "@<<", &dummy, '<');
+    flitWidgets.forwardButton = makeButton(125, 35, "@>>", &dummy, '>');
 
     flitWidgets.seekSlider = makeSeekSlider(155, 40, 210, 15);
     flitWidgets.volumeSlider = makeVolumeSlider(385, 40, 110, 15);
