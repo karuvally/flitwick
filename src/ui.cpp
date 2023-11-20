@@ -25,6 +25,12 @@ struct FlitWidgets {
     Fl_Slider* volumeSlider;
 } flitWidgets;
 
+struct ButtonProperties {
+    const char* label;
+    const char shortcut;
+    void (*callback) (); 
+};
+
 void dummy();
 void stopMusicCb();
 void pauseMusicCb();
@@ -89,12 +95,12 @@ Fl_Menu_Bar* makeMenuBar() {
     return playerMenu;
 }
 
-Fl_Button* makeButton(const int x, const int y, const char* label, void (*func)(), const char shortcut) {
+Fl_Button* makeButton(const int x, const int y, const struct ButtonProperties &buttonProperties) {
 // Creates new buttons
-    Fl_Button *button = new Fl_Button(x, y, 25, 25, label);
+    Fl_Button *button = new Fl_Button(x, y, 25, 25, buttonProperties.label);
     button->type(FL_NORMAL_BUTTON);
-    button->callback((Fl_Callback*)func);
-    button->shortcut(shortcut);
+    button->callback((Fl_Callback*)(buttonProperties.callback));
+    button->shortcut(buttonProperties.shortcut);
 
     return button;
 }
@@ -181,16 +187,23 @@ void chooseFileCb() {
     }
 }
 
+const struct ButtonProperties stopButtonProperties = {"@square", 's', &stopMusicCb};
+const struct ButtonProperties playButtonProperties = {"@>", 'p', &resumeMusicCb};
+const struct ButtonProperties pauseButtonProperties = {"@||", 'h', &pauseMusicCb};
+const struct ButtonProperties backwardButtonProperties = {"@<<", '<', &dummy};
+const struct ButtonProperties forwardButtonProperties= {"@>>", '>', &dummy};
+
+
 int player(int argc, char** argv) {
     auto playerWindow = std::make_unique<Fl_Window>(500, 300, "Flitwick");
 
     Fl_Menu_Bar* playerMenu = makeMenuBar();
     
-    flitWidgets.stopButton = makeButton(5, 35, "@square", &stopMusicCb, 's');
-    flitWidgets.playButton = makeButton(35, 35, "@>", &resumeMusicCb, 'p');
-    flitWidgets.pauseButton = makeButton(65, 35, "@||", &pauseMusicCb, 'h');
-    flitWidgets.backwardButton = makeButton(95, 35, "@<<", &dummy, '<');
-    flitWidgets.forwardButton = makeButton(125, 35, "@>>", &dummy, '>');
+    flitWidgets.stopButton = makeButton(5, 35, stopButtonProperties);
+    flitWidgets.playButton = makeButton(35, 35, playButtonProperties);
+    flitWidgets.pauseButton = makeButton(65, 35, pauseButtonProperties);
+    flitWidgets.backwardButton = makeButton(95, 35, backwardButtonProperties);
+    flitWidgets.forwardButton = makeButton(125, 35, forwardButtonProperties);
 
     flitWidgets.seekSlider = makeSeekSlider(155, 40, 210, 15);
     flitWidgets.volumeSlider = makeVolumeSlider(385, 40, 110, 15);
