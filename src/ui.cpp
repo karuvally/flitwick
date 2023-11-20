@@ -9,8 +9,10 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Slider.H>
 #include <FL/Fl_Value_Slider.H>
+#include <FL/Fl_Native_File_Chooser.H>
 
 MusicPlayer musicPlayer = MusicPlayer();
+std::string fileName = "";
 
 struct FlitWidgets {
     Fl_Button* stopButton; 
@@ -27,6 +29,7 @@ void dummy();
 void stopMusicCb();
 void pauseMusicCb();
 void resumeMusicCb();
+void chooseFileCb();
 void seekSliderWithTimeCb(void*);
 void volumeMusicCb(Fl_Widget*, void*);
 void volumeMusicCb(Fl_Widget*, void*);
@@ -38,13 +41,12 @@ Fl_Button* makeButton(const int, const int, const char*, void (*)());
 Fl_Slider* makeSeekSlider(const int, const int, const int, const int);
 Fl_Slider* makeVolumeSlider(const int, const int, const int, const int);
 
-
 Fl_Menu_Bar* makeMenuBar() {
 // Creates menu bar
 
     Fl_Menu_Item menuitems[] = {
         {"&File", 0, 0, 0, FL_SUBMENU}, // File
-            {"&Open File", 0},
+            {"&Open File", 0, (Fl_Callback*)chooseFileCb},
             {"&Add File", 0},
             {"&Add Folder", 0},
             {"&New Playlist", 0},
@@ -167,6 +169,17 @@ void dummy() {
     std::cout << "This function is bound to do something\n";
 }
 
+void chooseFileCb() {
+    auto fileChooser = std::make_unique<Fl_Native_File_Chooser>();
+    if (fileChooser->show() == 0) {
+        fileName = fileChooser->filename();
+        if (fileName.length() > 0) {
+            musicPlayer.loadMusic(fileName.data());
+            Fl::add_timeout(0.5, seekSliderWithTimeCb);
+        }
+    }
+}
+
 int player(int argc, char** argv) {
     auto playerWindow = std::make_unique<Fl_Window>(500, 300, "Flitwick");
 
@@ -180,9 +193,6 @@ int player(int argc, char** argv) {
 
     flitWidgets.seekSlider = makeSeekSlider(155, 40, 210, 15);
     flitWidgets.volumeSlider = makeVolumeSlider(385, 40, 110, 15);
-
-    musicPlayer.loadMusic(argv[1]);
-    Fl::add_timeout(0.5, seekSliderWithTimeCb);
 
     playerWindow->end();
     playerWindow->show(argc, argv);

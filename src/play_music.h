@@ -62,6 +62,7 @@ class MusicPlayer {
             }
 
             currentTrackLength = Mix_MusicDuration(music);
+            Mix_SetMusicPosition(0);
 
             // 2nd argument -1 puts the current track on a loop
             if (Mix_PlayMusic(music, -1) == -1) {
