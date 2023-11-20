@@ -12,14 +12,16 @@
 
 MusicPlayer musicPlayer = MusicPlayer();
 
-Fl_Button* stopButton; 
-Fl_Button* playButton; 
-Fl_Button* pauseButton;
-Fl_Button* backwardButton;
-Fl_Button* forwardButton;
+struct FlitWidgets {
+    Fl_Button* stopButton; 
+    Fl_Button* playButton; 
+    Fl_Button* pauseButton;
+    Fl_Button* backwardButton;
+    Fl_Button* forwardButton;
 
-Fl_Slider* seekSlider; 
-Fl_Slider* volumeSlider;
+    Fl_Slider* seekSlider; 
+    Fl_Slider* volumeSlider;
+} flitWidgets;
 
 Fl_Menu_Bar* makeMenuBar() {
 // Creates menu bar
@@ -115,7 +117,7 @@ Fl_Slider* makeVolumeSlider(const int x, const int y, const int w, const int h) 
 
 void stopMusicCb() {
     musicPlayer.stopMusic();
-    seekSlider->value(0);
+    flitWidgets.seekSlider->value(0);
 }
 
 void pauseMusicCb() {
@@ -146,7 +148,7 @@ void seekToPositionCb(Fl_Widget*, void* v) {
 
 void seekSliderWithTimeCb(void* v) {
     double pos = (musicPlayer.getMusicPosition()/musicPlayer.getMusicLength())*100;
-    seekSlider->value(pos);
+    flitWidgets.seekSlider->value(pos);
     if (musicPlayer.isMusicPlaying())
         Fl::repeat_timeout(0.5, seekSliderWithTimeCb);
 }
@@ -160,14 +162,14 @@ int player(int argc, char** argv) {
 
     Fl_Menu_Bar* playerMenu = makeMenuBar();
     
-    stopButton = makeButton(5, 35, "@square", &stopMusicCb);
-    playButton = makeButton(35, 35, "@>", &resumeMusicCb);
-    pauseButton = makeButton(65, 35, "@||", &pauseMusicCb);
-    backwardButton = makeButton(95, 35, "@<<", &dummy);
-    forwardButton = makeButton(125, 35, "@>>", &dummy);
+    flitWidgets.stopButton = makeButton(5, 35, "@square", &stopMusicCb);
+    flitWidgets.playButton = makeButton(35, 35, "@>", &resumeMusicCb);
+    flitWidgets.pauseButton = makeButton(65, 35, "@||", &pauseMusicCb);
+    flitWidgets.backwardButton = makeButton(95, 35, "@<<", &dummy);
+    flitWidgets.forwardButton = makeButton(125, 35, "@>>", &dummy);
 
-    seekSlider = makeSeekSlider(155, 40, 210, 15);
-    volumeSlider = makeVolumeSlider(385, 40, 110, 15);
+    flitWidgets.seekSlider = makeSeekSlider(155, 40, 210, 15);
+    flitWidgets.volumeSlider = makeVolumeSlider(385, 40, 110, 15);
 
     musicPlayer.loadMusic("/home/pranav/Music/muzik.mp3");
     Fl::add_timeout(0.5, seekSliderWithTimeCb);
