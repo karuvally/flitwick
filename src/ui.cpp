@@ -23,6 +23,22 @@ struct FlitWidgets {
     Fl_Slider* volumeSlider;
 } flitWidgets;
 
+void dummy();
+void stopMusicCb();
+void pauseMusicCb();
+void resumeMusicCb();
+void seekSliderWithTimeCb(void*);
+void volumeMusicCb(Fl_Widget*, void*);
+void volumeMusicCb(Fl_Widget*, void*);
+void seekToPositionCb(Fl_Widget*, void*);
+void seekToPositionCb(Fl_Widget*, void*);
+
+Fl_Menu_Bar* makeMenuBar();
+Fl_Button* makeButton(const int, const int, const char*, void (*)());
+Fl_Slider* makeSeekSlider(const int, const int, const int, const int);
+Fl_Slider* makeVolumeSlider(const int, const int, const int, const int);
+
+
 Fl_Menu_Bar* makeMenuBar() {
 // Creates menu bar
 
@@ -80,8 +96,6 @@ Fl_Button* makeButton(const int x, const int y, const char* label, void (*func)(
     return button;
 }
 
-void seekToPositionCb(Fl_Widget*, void*);
-
 Fl_Slider* makeSeekSlider(const int x, const int y, const int w, const int h) {
 // Creates seek slider
     Fl_Slider *slider = new Fl_Slider(x, y, w, h);
@@ -93,8 +107,6 @@ Fl_Slider* makeSeekSlider(const int x, const int y, const int w, const int h) {
 
     return slider;
 }
-
-void volumeMusicCb(Fl_Widget*, void*);
 
 Fl_Slider* makeVolumeSlider(const int x, const int y, const int w, const int h) {
 // Creates Volume slider
@@ -124,8 +136,6 @@ void pauseMusicCb() {
     if (musicPlayer.isMusicPlaying())
         musicPlayer.pauseMusic();
 }
-
-void seekSliderWithTimeCb(void*);
 
 void resumeMusicCb() {
     if (!musicPlayer.isMusicPlaying()) {
@@ -171,7 +181,7 @@ int player(int argc, char** argv) {
     flitWidgets.seekSlider = makeSeekSlider(155, 40, 210, 15);
     flitWidgets.volumeSlider = makeVolumeSlider(385, 40, 110, 15);
 
-    musicPlayer.loadMusic("/home/pranav/Music/muzik.mp3");
+    musicPlayer.loadMusic(argv[1]);
     Fl::add_timeout(0.5, seekSliderWithTimeCb);
 
     playerWindow->end();
