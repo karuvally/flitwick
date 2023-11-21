@@ -43,7 +43,7 @@ void seekToPositionCb(Fl_Widget*, void*);
 void seekToPositionCb(Fl_Widget*, void*);
 
 Fl_Menu_Bar* makeMenuBar();
-Fl_Button* makeButton(const int, const int, const char*, void (*)());
+Fl_Button* makeButton(const int, const int, const struct ButtonProperties&);
 Fl_Slider* makeSeekSlider(const int, const int, const int, const int);
 Fl_Slider* makeVolumeSlider(const int, const int, const int, const int);
 
@@ -129,7 +129,7 @@ Fl_Slider* makeVolumeSlider(const int x, const int y, const int w, const int h) 
     return slider;
 }
 
-/*  The following 4 functions are used just as to
+/*  The following 7 functions are used just as to
     satisfy the ISO C++ constraints of:
 
     "ISO C++ forbids taking the address of an
